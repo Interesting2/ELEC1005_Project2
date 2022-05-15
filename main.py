@@ -12,6 +12,7 @@ from pygame.locals import QUIT
 
 from game import Game
 
+# define colors
 black = pygame.Color(0, 0, 0)
 white = pygame.Color(255, 255, 255)
 
@@ -24,14 +25,20 @@ bright_blue = pygame.Color(32, 200, 200)
 yellow = pygame.Color(255, 205, 0)
 bright_yellow = pygame.Color(255, 255, 0)
 
+
+# game instance
 game = Game()
 rect_len = game.settings.rect_len
 snake = game.snake
-pygame.init()
-fpsClock = pygame.time.Clock()
+pygame.init() # initialize pygame library
+
+fpsClock = pygame.time.Clock()     # keep track of time
+
+# set up window
 screen = pygame.display.set_mode((game.settings.width * 15, game.settings.height * 15))
 pygame.display.set_caption('Gluttonous')
 
+# load sound
 crash_sound = pygame.mixer.Sound('./sound/crash.wav')
 
 
@@ -51,6 +58,8 @@ def message_display(text, x, y, color=black):
 def button(msg, x, y, w, h, inactive_color, active_color, action=None, parameter=None):
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
+
+    # if clicked inside the button area
     if x + w > mouse[0] > x and y + h > mouse[1] > y:
         pygame.draw.rect(screen, active_color, (x, y, w, h))
         if click[0] == 1 and action != None:
@@ -78,10 +87,29 @@ def crash():
     time.sleep(1)
 
 
+def back_to_main_window():
+    global back_button_pressed
+    back_button_pressed = True
+
+def display_scoreboard(fps=10):
+    global back_button_pressed
+    back_button_pressed = False
+
+    while not back_button_pressed: 
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+
+        screen.fill(black)
+        button("Back", 0, 0, 80, 40, green, bright_green, back_to_main_window)  # create a back button
+        # pygame.event.pump() already included in pygame.event.get()
+        pygame.display.flip()   # updates screen
+
 def initial_interface():
     intro = True
     while intro:
 
+        # if close button is pressed
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -89,11 +117,12 @@ def initial_interface():
         screen.fill(white)
         message_display('Gluttonous', game.settings.width / 2 * 15, game.settings.height / 4 * 15)
 
-        button('Go!', 80, 240, 80, 40, green, bright_green, game_loop, 'human')
-        button('Quit', 270, 240, 80, 40, red, bright_red, quitgame)
+        button('Go!', 50, 240, 80, 40, green, bright_green, game_loop, 'human')
+        button("Scoreboard", 155, 240, 120, 40, blue, bright_blue, display_scoreboard)
+        button('Quit', 300, 240, 80, 40, red, bright_red, quitgame)
 
-        pygame.display.update()
-        pygame.time.Clock().tick(15)
+        pygame.display.flip()
+        pygame.time.Clock().tick(30)
 
 
 def game_loop(player, fps=10):
@@ -101,10 +130,14 @@ def game_loop(player, fps=10):
 
     while not game.game_end():
 
-        pygame.event.pump()
+        pygame.event.pump() # handle internal actions
 
-        move = human_move()
-        fps = 5
+        move = human_move() # integer representing direction
+        # {0 : 'up',
+        #   1 : 'down',
+        #   2 : 'left',
+        #   3 : 'right'}
+        # fps = 30
 
         game.do_move(move)
 
@@ -114,7 +147,7 @@ def game_loop(player, fps=10):
         game.strawberry.blit(screen)
         game.blit_score(white, screen)
 
-        pygame.display.flip()
+        pygame.display.flip()   # updates screen
 
         fpsClock.tick(fps)
 
@@ -128,6 +161,7 @@ def human_move():
         if event.type == QUIT:
             pygame.quit()
 
+        # if oen of the arrow keys are pressed, or escape key is pressed
         elif event.type == KEYDOWN:
             if event.key == K_RIGHT or event.key == ord('d'):
                 direction = 'right'
