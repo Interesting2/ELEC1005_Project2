@@ -91,6 +91,25 @@ def back_to_main_window():
     global back_button_pressed
     back_button_pressed = True
 
+def draw_score_board():
+    board_surf = pygame.Surface((game.settings.height, game.settings.width))
+    screen.fill(yellow);
+    screen.blit(board_surf, (0, 0))
+
+    # draw score texts
+    smallText = pygame.font.SysFont('comicsansms', 30)
+    TextSurf, TextRect = text_objects("Top 5 Scores:", smallText)
+    TextRect.center = (game.settings.width / 2 * 15, game.settings.height / 4 * 10)
+    screen.blit(TextSurf, TextRect)
+
+    # draw score numbers
+    for i in range(5):
+        # save score in a file
+
+        TextSurf, TextRect = text_objects(str(i + 1), smallText)
+        TextRect.center = (game.settings.width / 2 * 9, game.settings.height / 4 * 13 + (i + 1) * 35)
+        screen.blit(TextSurf, TextRect)
+
 def display_scoreboard(fps=10):
     global back_button_pressed
     back_button_pressed = False
@@ -101,6 +120,7 @@ def display_scoreboard(fps=10):
                 pygame.quit()
 
         screen.fill(black)
+        draw_score_board()
         button("Back", 0, 0, 80, 40, green, bright_green, back_to_main_window)  # create a back button
         # pygame.event.pump() already included in pygame.event.get()
         pygame.display.flip()   # updates screen
