@@ -92,8 +92,9 @@ def back_to_main_window():
     back_button_pressed = True
 
 def draw_score_board():
+    
     board_surf = pygame.Surface((game.settings.height, game.settings.width))
-    screen.fill(yellow);
+    # screen.fill(yellow);
     screen.blit(board_surf, (0, 0))
 
     # draw score texts
@@ -114,12 +115,16 @@ def display_scoreboard(fps=10):
     global back_button_pressed
     back_button_pressed = False
 
+    # background_image = pygame.image.load('./images/Aatrox_7.jpg')
+    background_image = pygame.image.load('./images/Syndra_4.jpg')
+
     while not back_button_pressed: 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
 
-        screen.fill(black)
+        # screen.fill(black)
+        screen.blit(background_image, (-300, -80))
         draw_score_board()
         button("Back", 0, 0, 80, 40, green, bright_green, back_to_main_window)  # create a back button
         # pygame.event.pump() already included in pygame.event.get()
@@ -127,6 +132,9 @@ def display_scoreboard(fps=10):
 
 def initial_interface():
     intro = True
+
+    # draw background image to main screen
+    background_image = pygame.image.load('./images/bgimage.webp')
     while intro:
 
         # if close button is pressed
@@ -135,6 +143,7 @@ def initial_interface():
                 pygame.quit()
 
         screen.fill(white)
+        screen.blit(background_image, (-700, -175))
         message_display('Gluttonous', game.settings.width / 2 * 15, game.settings.height / 4 * 15)
 
         button('Go!', 50, 240, 80, 40, green, bright_green, game_loop, 'human')
