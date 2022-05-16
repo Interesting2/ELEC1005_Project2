@@ -17,17 +17,17 @@ class Settings:
 class Snake:
     def __init__(self):
 
-        self.image_up = pygame.image.load('images/head_up.bmp')
-        self.image_down = pygame.image.load('images/head_down.bmp')
-        self.image_left = pygame.image.load('images/head_left.bmp')
-        self.image_right = pygame.image.load('images/head_right.bmp')
+        self.image_up = pygame.image.load('images/Emblem_Challenger_up.png')
+        self.image_down = pygame.image.load('images/Emblem_Challenger_down.png')
+        self.image_left = pygame.image.load('images/Emblem_Challenger_left.png')
+        self.image_right = pygame.image.load('images/Emblem_Challenger_right.png')
 
-        self.tail_up = pygame.image.load('images/tail_up.bmp')
-        self.tail_down = pygame.image.load('images/tail_down.bmp')
-        self.tail_left = pygame.image.load('images/tail_left.bmp')
-        self.tail_right = pygame.image.load('images/tail_right.bmp')
+        self.tail_up = pygame.image.load('images/Fire.png')
+        self.tail_down = pygame.image.load('images/Fire.png')
+        self.tail_left = pygame.image.load('images/Fire.png')
+        self.tail_right = pygame.image.load('images/Fire.png')
 
-        self.image_body = pygame.image.load('images/body.bmp')
+        self.image_body = pygame.image.load('images/Fire.png')
 
         self.facing = "right"
         self.initialize()
@@ -37,6 +37,34 @@ class Snake:
         self.segments = [[6 - i, 6] for i in range(2)]
         self.score = 0
 
+    def setSkin(self, skinName):
+        if skinName == 'Fire':
+            # load challenger
+            self.image_up = pygame.image.load('images/Emblem_Challenger_up.png')
+            self.image_down = pygame.image.load('images/Emblem_Challenger_down.png')
+            self.image_left = pygame.image.load('images/Emblem_Challenger_left.png')
+            self.image_right = pygame.image.load('images/Emblem_Challenger_right.png')
+
+            self.image_body = pygame.image.load('images/Fire.png')
+        
+        elif skinName == 'Wind':
+            # load Master
+            self.image_up = pygame.image.load('images/Emblem_Master_up.png')
+            self.image_down = pygame.image.load('images/Emblem_Master_down.png')
+            self.image_left = pygame.image.load('images/Emblem_Master_left.png')
+            self.image_right = pygame.image.load('images/Emblem_Master_right.png')
+
+            self.image_body = pygame.image.load('images/Wind.png')
+        
+        else:
+            # load Grandmaster
+            self.image_up = pygame.image.load('images/Emblem_Grandmaster_up.png')
+            self.image_down = pygame.image.load('images/Emblem_Grandmaster_down.png')
+            self.image_left = pygame.image.load('images/Emblem_Grandmaster_left.png')
+            self.image_right = pygame.image.load('images/Emblem_Grandmaster_right.png')
+
+            self.image_body = pygame.image.load('images/Lightning.png')
+            
     def blit_body(self, x, y, screen):
         screen.blit(self.image_body, (x, y))
 

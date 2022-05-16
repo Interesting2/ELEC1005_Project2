@@ -47,12 +47,12 @@ def text_objects(text, font, color=black):
     return text_surface, text_surface.get_rect()
 
 
-def message_display(text, x, y, color=black):
-    large_text = pygame.font.SysFont('comicsansms', 50)
+def message_display(text, x, y, color=black, font_size=50):
+    large_text = pygame.font.SysFont('comicsansms', font_size)
     text_surf, text_rect = text_objects(text, large_text, color)
     text_rect.center = (x, y)
     screen.blit(text_surf, text_rect)
-    pygame.display.update()
+    # pygame.display.update()
 
 
 def button(msg, x, y, w, h, inactive_color, active_color, action=None, parameter=None):
@@ -153,8 +153,48 @@ def initial_interface():
         pygame.display.flip()
         pygame.time.Clock().tick(30)
 
+def skin_manager(skinName):
+    global play_button_pressed
+    play_button_pressed = True
+
+    game.snake.setSkin(skinName)  # skin skin for the sprite
+
+def display_settings():
+    global play_button_pressed
+    global back_button_pressed
+    play_button_pressed = False
+    back_button_pressed = False
+
+    background_image = pygame.image.load('./images/TwistedFate_3.jpg')
+    # background_image = pygame.image.load('./images/Syndra_4.jpg')
+    while not play_button_pressed and not back_button_pressed:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+
+        screen.blit(background_image, (-300, -80))
+
+
+        # pick a skin message
+        message_display('Pick a skin:', game.settings.width / 2 * 15, game.settings.height / 4 * 15, black, 40)
+
+        # draw a button for each skin
+        button('Fire', game.settings.width / 2 * 10.5, game.settings.height / 4 * 21, 120, 45, red, bright_red, skin_manager, 'Fire')
+        button('Wind', game.settings.width / 2 * 10.5, game.settings.height / 4 * 30, 120, 45, blue, bright_blue, skin_manager, 'Wind')
+        button('Lightning', game.settings.width / 2 * 10.5, game.settings.height / 4 * 39, 120, 45, yellow, bright_yellow, skin_manager, 'Lightning')
+
+        button("Back", 0, 0, 80, 40, green, bright_green, back_to_main_window)  # create a back button
+        # pygame.event.pump() already included in pygame.event.get()
+        pygame.display.flip()   # updates screen
+    
+    # determine which button was pressed
+    return play_button_pressed
+
 
 def game_loop(player, fps=10):
+    condition = display_settings()
+    if not condition: return    # this means that back button was pressed instead of play button
+
     game.restart_game()
 
     while not game.game_end():
