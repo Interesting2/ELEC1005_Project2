@@ -210,7 +210,37 @@ def save_score(score):
     with open('score.txt', 'a') as f:
         f.write(str(score) + '\n')
 
+def display_time():
+    # display timer in top right corner
+    # increment timer every second
+
+    global timer
+    split_time = timer.split(':')
+    h, m, s = map(int, split_time)
+
+    if s + 1 == 60:
+        s = 0
+        m += 1
+    else:
+        s += 1
+
+    if m == 60:
+        m = 0
+        h += 1
+    
+    if s < 10:
+        s = f'0{s}'
+    if m < 10:
+        m = f'0{m}'
+    if h < 10:
+        h = f'0{h}'
+    timer = f'{h}:{m}:{s}'
+    
+    message_display(timer, game.settings.width / 2 * 15, 10, white, 20)     # center the timer
+    
 def game_loop(player, fps=10):
+
+    
     condition = display_settings()
     if not condition: return    # this means that back button was pressed instead of play button
 
@@ -218,6 +248,10 @@ def game_loop(player, fps=10):
 
     # background image of game
     background_image = pygame.image.load('./images/bgimage.webp')
+
+    # variables for implementing timer, and game speed
+    global increased_speed, prev_game_score, timer
+    increased_speed, prev_game_score, timer = False, 0, '00:00:00'
 
     while not game.game_end():
 
@@ -238,6 +272,17 @@ def game_loop(player, fps=10):
         game.snake.blit(rect_len, screen)
         game.strawberry.blit(screen)
         game.blit_score(white, screen)
+
+        display_time()
+
+        if prev_game_score != game.snake.score:
+            increased_speed = False
+
+        # increase the speed of the game as the score increases by 10    
+        if game.snake.score != 0 and game.snake.score % 10 == 0 and not increased_speed: 
+            prev_game_score = game.snake.score
+            increased_speed = True
+            fps += 1
 
         pygame.display.flip()   # updates screen
 
