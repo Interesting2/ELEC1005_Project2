@@ -197,6 +197,9 @@ def game_loop(player, fps=10):
 
     game.restart_game()
 
+    # background image of game
+    background_image = pygame.image.load('./images/bgimage.webp')
+
     while not game.game_end():
 
         pygame.event.pump() # handle internal actions
@@ -211,6 +214,7 @@ def game_loop(player, fps=10):
         game.do_move(move)
 
         screen.fill(black)
+        screen.blit(background_image, (-400, -250))
 
         game.snake.blit(rect_len, screen)
         game.strawberry.blit(screen)
