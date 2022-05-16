@@ -282,7 +282,7 @@ def game_loop(player, fps=10):
         if game.snake.score != 0 and game.snake.score % 10 == 0 and not increased_speed: 
             prev_game_score = game.snake.score
             increased_speed = True
-            fps += 1
+            fps += 3
 
         pygame.display.flip()   # updates screen
 
