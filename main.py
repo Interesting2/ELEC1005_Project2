@@ -113,11 +113,12 @@ def draw_score_board():
 
         if exists("score.txt"):
             with open('score.txt', 'r') as f:
-                lines = f.readlines()
+                lines = list(map(int, f.read().splitlines()))
+                #print(lines)
                 lines.sort(reverse=True)
                 for j in range(5):
                     if j >= len(lines): break
-                    top_5_scores[j] = lines[j].strip('\n')
+                    top_5_scores[j] = lines[j]
             TextSurf, TextRect = text_objects(f'{str(i + 1)}. {top_5_scores[i]}', smallText)
             if top_5_scores[i] == 'None':
                 TextRect.center = (game.settings.width / 2 * 12, game.settings.height / 4 * 13 + (i + 1) * 35)
