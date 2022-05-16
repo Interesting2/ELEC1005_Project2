@@ -10,6 +10,8 @@ import time
 from pygame.locals import KEYDOWN, K_RIGHT, K_LEFT, K_UP, K_DOWN, K_ESCAPE
 from pygame.locals import QUIT
 
+from os.path import exists
+
 from game import Game
 
 # define colors
@@ -103,12 +105,25 @@ def draw_score_board():
     TextRect.center = (game.settings.width / 2 * 15, game.settings.height / 4 * 10)
     screen.blit(TextSurf, TextRect)
 
+    top_5_scores = ['None'] * 5
+    
     # draw score numbers
     for i in range(5):
-        # save score in a file
+        # read top 5 score from file
 
-        TextSurf, TextRect = text_objects(str(i + 1), smallText)
-        TextRect.center = (game.settings.width / 2 * 9, game.settings.height / 4 * 13 + (i + 1) * 35)
+        if exists("score.txt"):
+            with open('score.txt', 'r') as f:
+                lines = f.readlines()
+                lines.sort(reverse=True)
+                for j in range(5):
+                    if j >= len(lines): break
+                    top_5_scores[j] = lines[j].strip('\n')
+            TextSurf, TextRect = text_objects(f'{str(i + 1)}. {top_5_scores[i]}', smallText)
+            if top_5_scores[i] == 'None':
+                TextRect.center = (game.settings.width / 2 * 12, game.settings.height / 4 * 13 + (i + 1) * 35)
+            else:
+                TextRect.center = (game.settings.width / 2 * 10, game.settings.height / 4 * 13 + (i + 1) * 35)
+
         screen.blit(TextSurf, TextRect)
 
 def display_scoreboard(fps=10):
@@ -190,6 +205,10 @@ def display_settings():
     # determine which button was pressed
     return play_button_pressed
 
+def save_score(score):
+    # save score in a file
+    with open('score.txt', 'a') as f:
+        f.write(str(score) + '\n')
 
 def game_loop(player, fps=10):
     condition = display_settings()
@@ -225,6 +244,7 @@ def game_loop(player, fps=10):
         fpsClock.tick(fps)
 
     crash()
+    save_score(game.snake.score)
 
 
 def human_move():
