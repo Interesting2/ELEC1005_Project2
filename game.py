@@ -54,6 +54,12 @@ class Snake:
             self.image_left = pygame.image.load('images/Emblem_Master_left.png')
             self.image_right = pygame.image.load('images/Emblem_Master_right.png')
 
+            self.tail_up = pygame.image.load('images/Wind.png')
+            self.tail_down = pygame.image.load('images/Wind.png')
+            self.tail_left = pygame.image.load('images/Wind.png')
+            self.tail_right = pygame.image.load('images/Wind.png')
+
+
             self.image_body = pygame.image.load('images/Wind.png')
         
         else:
@@ -62,6 +68,12 @@ class Snake:
             self.image_down = pygame.image.load('images/Emblem_Grandmaster_down.png')
             self.image_left = pygame.image.load('images/Emblem_Grandmaster_left.png')
             self.image_right = pygame.image.load('images/Emblem_Grandmaster_right.png')
+
+            self.tail_up = pygame.image.load('images/Lightning.png')
+            self.tail_down = pygame.image.load('images/Lightning.png')
+            self.tail_left = pygame.image.load('images/Lightning.png')
+            self.tail_right = pygame.image.load('images/Lightning.png')
+
 
             self.image_body = pygame.image.load('images/Lightning.png')
             
