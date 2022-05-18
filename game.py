@@ -45,6 +45,11 @@ class Snake:
             self.image_left = pygame.image.load('images/Emblem_Challenger_left.png')
             self.image_right = pygame.image.load('images/Emblem_Challenger_right.png')
 
+            self.tail_up = pygame.image.load('images/Fire.png')
+            self.tail_down = pygame.image.load('images/Fire.png')
+            self.tail_left = pygame.image.load('images/Fire.png')
+            self.tail_right = pygame.image.load('images/Fire.png')
+
             self.image_body = pygame.image.load('images/Fire.png')
         
         elif skinName == 'Wind':
