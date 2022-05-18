@@ -42,6 +42,7 @@ pygame.display.set_caption('Gluttonous')
 
 # load sound
 crash_sound = pygame.mixer.Sound('./sound/crash.wav')
+button_sound = pygame.mixer.Sound('./sound/button_click.mp3')
 
 Crashed = False
 
@@ -80,6 +81,9 @@ def button(msg, x, y, w, h, inactive_color, active_color, action=None, parameter
 
 
 def quitgame():
+    # play button sound
+    pygame.mixer.Sound.play(button_sound)
+
     pygame.quit()
     quit()
 
@@ -97,6 +101,9 @@ def crash():
 def back_to_main_window():
     global back_button_pressed
     back_button_pressed = True
+
+    # play button sound
+    pygame.mixer.Sound.play(button_sound)
 
 def draw_score_board():
 
@@ -135,6 +142,9 @@ def draw_score_board():
 def display_scoreboard(fps=10):
     global back_button_pressed
     back_button_pressed = False
+
+    # play button sound
+    pygame.mixer.Sound.play(button_sound)
 
     # background_image = pygame.image.load('./images/Aatrox_7.jpg')
     background_image = pygame.image.load('./images/Syndra_4.jpg')
@@ -191,6 +201,9 @@ def initial_interface():
 def skin_manager(skinName):
     global play_button_pressed
     play_button_pressed = True
+
+    # play button sound
+    pygame.mixer.Sound.play(button_sound)
 
     game.snake.setSkin(skinName)  # skin skin for the sprite
 
@@ -259,7 +272,8 @@ def display_time():
     message_display(timer, game.settings.width / 2 * 15, 10, white, 20)     # center the timer
 
 def game_loop(player, fps=10):
-
+    # play button sound
+    pygame.mixer.Sound.play(button_sound)
 
     condition = display_settings()
     if not condition: return    # this means that back button was pressed instead of play button
