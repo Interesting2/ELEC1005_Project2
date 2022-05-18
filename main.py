@@ -43,9 +43,7 @@ pygame.display.set_caption('Gluttonous')
 # load sound
 crash_sound = pygame.mixer.Sound('./sound/crash.wav')
 
-# main bg music
-main_bg_music = pygame.mixer.music.load('./sound/campfire.mp3')
-
+Crashed = False
 
 def text_objects(text, font, color=black):
     text_surface = font.render(text, True, color)
@@ -87,7 +85,11 @@ def quitgame():
 
 
 def crash():
-    mixer.Sound.play(crash_sound)
+    global Crashed
+
+    pygame.mixer.music.pause()
+    Crashed = True
+    pygame.mixer.Sound.play(crash_sound)
     message_display('crashed', game.settings.width / 2 * 15, game.settings.height / 3 * 15, white)
     time.sleep(1)
 
@@ -150,20 +152,30 @@ def display_scoreboard(fps=10):
         pygame.display.flip()   # updates screen
 
 def initial_interface():
+
     intro = True
 
-    pygame.mixer.music.play()
+    # main bg music
+    main_bg_music = pygame.mixer.music.load('./sound/campfire.mp3')
+    pygame.mixer.music.play(-1)
     pygame.mixer.music.set_volume(0.2)
-
 
     # draw background image to main screen
     background_image = pygame.image.load('./images/bgimage.webp')
     while intro:
+        global Crashed
 
         # if close button is pressed
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+
+        if Crashed:
+            # main bg music
+            main_bg_music = pygame.mixer.music.load('./sound/campfire.mp3')
+            pygame.mixer.music.play(-1)
+            pygame.mixer.music.set_volume(0.2)
+            Crashed = False
 
         screen.fill(white)
         screen.blit(background_image, (-700, -175))
