@@ -7,13 +7,13 @@ You will need to modify this code to complete your Project 2 assignment.
 - pygame
 
 ## New Features
-- Two Player Game
 - Difficulty (Increase speed as the game progresses)
-- Change Sprite Image 
 - Choose Sprite skins (Different types of sprite)
-- Time
+- Time Keeping
 - Scoreboard
-- buff / nerf strawberries
+- Background Music
+- Button clicking sounds
+- Background Colour
 
 ## Usage
 To start the game
