@@ -43,6 +43,9 @@ pygame.display.set_caption('Gluttonous')
 # load sound
 crash_sound = pygame.mixer.Sound('./sound/crash.wav')
 
+# main bg music
+main_bg_music = pygame.mixer.music.load('./sound/campfire.mp3')
+
 
 def text_objects(text, font, color=black):
     text_surface = font.render(text, True, color)
@@ -84,7 +87,7 @@ def quitgame():
 
 
 def crash():
-    pygame.mixer.Sound.play(crash_sound)
+    mixer.Sound.play(crash_sound)
     message_display('crashed', game.settings.width / 2 * 15, game.settings.height / 3 * 15, white)
     time.sleep(1)
 
@@ -94,7 +97,7 @@ def back_to_main_window():
     back_button_pressed = True
 
 def draw_score_board():
-    
+
     board_surf = pygame.Surface((game.settings.height, game.settings.width))
     # screen.fill(yellow);
     screen.blit(board_surf, (0, 0))
@@ -106,7 +109,7 @@ def draw_score_board():
     screen.blit(TextSurf, TextRect)
 
     top_5_scores = ['None'] * 5
-    
+
     # draw score numbers
     for i in range(5):
         # read top 5 score from file
@@ -134,7 +137,7 @@ def display_scoreboard(fps=10):
     # background_image = pygame.image.load('./images/Aatrox_7.jpg')
     background_image = pygame.image.load('./images/Syndra_4.jpg')
 
-    while not back_button_pressed: 
+    while not back_button_pressed:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -148,6 +151,10 @@ def display_scoreboard(fps=10):
 
 def initial_interface():
     intro = True
+
+    pygame.mixer.music.play()
+    pygame.mixer.music.set_volume(0.2)
+
 
     # draw background image to main screen
     background_image = pygame.image.load('./images/bgimage.webp')
@@ -202,7 +209,7 @@ def display_settings():
         button("Back", 0, 0, 80, 40, green, bright_green, back_to_main_window)  # create a back button
         # pygame.event.pump() already included in pygame.event.get()
         pygame.display.flip()   # updates screen
-    
+
     # determine which button was pressed
     return play_button_pressed
 
@@ -228,7 +235,7 @@ def display_time():
     if m == 60:
         m = 0
         h += 1
-    
+
     if s < 10:
         s = f'0{s}'
     if m < 10:
@@ -236,12 +243,12 @@ def display_time():
     if h < 10:
         h = f'0{h}'
     timer = f'{h}:{m}:{s}'
-    
+
     message_display(timer, game.settings.width / 2 * 15, 10, white, 20)     # center the timer
-    
+
 def game_loop(player, fps=10):
 
-    
+
     condition = display_settings()
     if not condition: return    # this means that back button was pressed instead of play button
 
@@ -279,8 +286,8 @@ def game_loop(player, fps=10):
         if prev_game_score != game.snake.score:
             increased_speed = False
 
-        # increase the speed of the game as the score increases by 10    
-        if game.snake.score != 0 and game.snake.score % 10 == 0 and not increased_speed: 
+        # increase the speed of the game as the score increases by 10
+        if game.snake.score != 0 and game.snake.score % 10 == 0 and not increased_speed:
             prev_game_score = game.snake.score
             increased_speed = True
             fps += 3
