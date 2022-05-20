@@ -33,8 +33,8 @@ class Snake:
         self.initialize()
 
     def initialize(self):
-        self.position = [6, 6]
-        self.segments = [[6 - i, 6] for i in range(2)]
+        self.position = [15, 15] # represents x, y coords
+        self.segments = [[6 - i, 6] for i in range(2)]  # each inner list represents the x,y coords of the segment
         self.score = 0
 
     def setSkin(self, skinName):
@@ -51,7 +51,7 @@ class Snake:
             self.tail_right = pygame.image.load('images/Fire.png')
 
             self.image_body = pygame.image.load('images/Fire.png')
-        
+
         elif skinName == 'Wind':
             # load Master
             self.image_up = pygame.image.load('images/Emblem_Master_up.png')
@@ -66,7 +66,7 @@ class Snake:
 
 
             self.image_body = pygame.image.load('images/Wind.png')
-        
+
         else:
             # load Grandmaster
             self.image_up = pygame.image.load('images/Emblem_Grandmaster_up.png')
@@ -79,9 +79,8 @@ class Snake:
             self.tail_left = pygame.image.load('images/Lightning.png')
             self.tail_right = pygame.image.load('images/Lightning.png')
 
-
             self.image_body = pygame.image.load('images/Lightning.png')
-            
+
     def blit_body(self, x, y, screen):
         screen.blit(self.image_body, (x, y))
 
@@ -115,7 +114,7 @@ class Snake:
 
 
     def update(self):
-        # increment x,y coords
+        # increment or decrement depending on the direction x,y coords
         if self.facing == 'right':
             self.position[0] += 1
         if self.facing == 'left':
@@ -124,13 +123,14 @@ class Snake:
             self.position[1] -= 1
         if self.facing == 'down':
             self.position[1] += 1
-        self.segments.insert(0, list(self.position))
+        self.segments.insert(0, list(self.position))    # insert new positions
+
 
 class Strawberry():
     def __init__(self, settings):
         self.settings = settings
         self.position = []
-        self.style = str(random.randint(1, 8))
+        self.style = str(random.randint(1, 8))  # represents one of the image
         self.image = pygame.image.load('images/food' + str(self.style) + '.bmp')
         self.initialize()
 
@@ -144,14 +144,15 @@ class Strawberry():
         self.position[0] = random.randint(9, 19)
         self.position[1] = random.randint(9, 19)
 
+        # if the strawberry spawn in the position that overlaps with the snake
         if self.position in snake.segments:
-            self.random_pos(snake)
+            self.random_pos(snake)  # create a random position for the strawberry
 
     def blit(self, screen):
         screen.blit(self.image, [p * self.settings.rect_len for p in self.position])
 
     def initialize(self):
-        self.position = [15, 10]
+        self.position = [15, 10]    # initial position
 
 
 class Game:
@@ -205,10 +206,11 @@ class Game:
 
         self.snake.update() # update x,y coords
 
+        # if the snake ate the strawberry
         if self.snake.position == self.strawberry.position:
             self.strawberry.random_pos(self.snake)
             reward = 1
-            self.snake.score += 1
+            self.snake.score += 1   # increment score
         else:
             self.snake.segments.pop()
             reward = 0
@@ -218,6 +220,7 @@ class Game:
 
         return reward
 
+    # game end conditions
     def game_end(self):
         end = False
         if self.snake.position[0] >= self.settings.width or self.snake.position[0] < 0:
@@ -229,6 +232,7 @@ class Game:
 
         return end
 
+    # draws the score to screen
     def blit_score(self, color, screen):
         font = pygame.font.SysFont(None, 25)
         text = font.render('Score: ' + str(self.snake.score), True, color)

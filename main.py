@@ -44,30 +44,34 @@ pygame.display.set_caption('Gluttonous')
 crash_sound = pygame.mixer.Sound('./sound/crash.wav')
 button_sound = pygame.mixer.Sound('./sound/button_click.mp3')
 
+# keeping track if the game ended
 Crashed = False
 
+
+# creates a text surface to add to screen
 def text_objects(text, font, color=black):
     text_surface = font.render(text, True, color)
     return text_surface, text_surface.get_rect()
 
 
+# draws the text on screen
 def message_display(text, x, y, color=black, font_size=50):
     large_text = pygame.font.SysFont('comicsansms', font_size)
     text_surf, text_rect = text_objects(text, large_text, color)
-    text_rect.center = (x, y)
-    screen.blit(text_surf, text_rect)
-    # pygame.display.update()
+    text_rect.center = (x, y)   # sets the text position
+    screen.blit(text_surf, text_rect)   # draws the text on screen
 
 
+# creates a button
 def button(msg, x, y, w, h, inactive_color, active_color, action=None, parameter=None):
-    mouse = pygame.mouse.get_pos()
-    click = pygame.mouse.get_pressed()
+    mouse = pygame.mouse.get_pos()  # gets mouse position
+    click = pygame.mouse.get_pressed()  # check whether mouse is clicked
 
     # if clicked inside the button area
     if x + w > mouse[0] > x and y + h > mouse[1] > y:
-        pygame.draw.rect(screen, active_color, (x, y, w, h))
+        pygame.draw.rect(screen, active_color, (x, y, w, h))    # display the active color of the button
         if click[0] == 1 and action != None:
-            if parameter != None:
+            if parameter != None:   # pass the arguments if not none
                 action(parameter)
             else:
                 action()
@@ -84,20 +88,22 @@ def quitgame():
     # play button sound
     pygame.mixer.Sound.play(button_sound)
 
-    pygame.quit()
+    pygame.quit()   # quit the program
     quit()
 
 
+# executed if the sprite hits the wall
 def crash():
     global Crashed
 
-    pygame.mixer.music.pause()
+    pygame.mixer.music.pause() # pause music
     Crashed = True
-    pygame.mixer.Sound.play(crash_sound)
-    message_display('crashed', game.settings.width / 2 * 15, game.settings.height / 3 * 15, white)
-    time.sleep(1)
+    pygame.mixer.Sound.play(crash_sound) # play crasho sound
+    message_display('crashed', game.settings.width / 2 * 15, game.settings.height / 3 * 15, white)  # display crashed message
+    time.sleep(1) # hold thread for 1 second
 
 
+# indicating that the back button
 def back_to_main_window():
     global back_button_pressed
     back_button_pressed = True
@@ -105,11 +111,12 @@ def back_to_main_window():
     # play button sound
     pygame.mixer.Sound.play(button_sound)
 
+# display the scoreboard and the score texts
 def draw_score_board():
 
     board_surf = pygame.Surface((game.settings.height, game.settings.width))
-    # screen.fill(yellow);
-    screen.blit(board_surf, (0, 0))
+
+    screen.blit(board_surf, (0, 0)) # draws the board surface at position (0, 0)
 
     # draw score texts
     smallText = pygame.font.SysFont('comicsansms', 30)
@@ -122,16 +129,15 @@ def draw_score_board():
     # draw score numbers
     for i in range(5):
         # read top 5 score from file
-
         if exists("score.txt"):
             with open('score.txt', 'r') as f:
-                lines = list(map(int, f.read().splitlines()))
-                #print(lines)
+                lines = list(map(int, f.read().splitlines()))   # convert each element to integer
                 lines.sort(reverse=True)
                 for j in range(5):
                     if j >= len(lines): break
                     top_5_scores[j] = lines[j]
-            TextSurf, TextRect = text_objects(f'{str(i + 1)}. {top_5_scores[i]}', smallText)
+            TextSurf, TextRect = text_objects(f'{str(i + 1)}. {top_5_scores[i]}', smallText)    # each score text
+            # adjust position depending on the text
             if top_5_scores[i] == 'None':
                 TextRect.center = (game.settings.width / 2 * 12, game.settings.height / 4 * 13 + (i + 1) * 35)
             else:
@@ -154,20 +160,18 @@ def display_scoreboard(fps=10):
             if event.type == pygame.QUIT:
                 pygame.quit()
 
-        # screen.fill(black)
         screen.blit(background_image, (-300, -80))
         draw_score_board()
         button("Back", 0, 0, 80, 40, green, bright_green, back_to_main_window)  # create a back button
-        # pygame.event.pump() already included in pygame.event.get()
         pygame.display.flip()   # updates screen
 
+# main window interface
 def initial_interface():
-
     intro = True
 
     # main bg music
     main_bg_music = pygame.mixer.music.load('./sound/campfire.mp3')
-    pygame.mixer.music.play(-1)
+    pygame.mixer.music.play(-1) # play music indefinetely
     pygame.mixer.music.set_volume(0.2)
 
     # draw background image to main screen
@@ -181,7 +185,7 @@ def initial_interface():
                 pygame.quit()
 
         if Crashed:
-            # main bg music
+            # replay music if the game ended
             main_bg_music = pygame.mixer.music.load('./sound/campfire.mp3')
             pygame.mixer.music.play(-1)
             pygame.mixer.music.set_volume(0.2)
@@ -195,9 +199,10 @@ def initial_interface():
         button("Scoreboard", 155, 240, 120, 40, blue, bright_blue, display_scoreboard)
         button('Quit', 300, 240, 80, 40, red, bright_red, quitgame)
 
-        pygame.display.flip()
+        pygame.display.flip()   # updates the screen
         pygame.time.Clock().tick(30)
 
+# helps managing the 3 sprite skins
 def skin_manager(skinName):
     global play_button_pressed
     play_button_pressed = True
@@ -205,8 +210,9 @@ def skin_manager(skinName):
     # play button sound
     pygame.mixer.Sound.play(button_sound)
 
-    game.snake.setSkin(skinName)  # skin skin for the sprite
+    game.snake.setSkin(skinName)  # set skin for the sprite
 
+# displays the settings window after clicking on Go!
 def display_settings():
     global play_button_pressed
     global back_button_pressed
@@ -214,7 +220,6 @@ def display_settings():
     back_button_pressed = False
 
     background_image = pygame.image.load('./images/TwistedFate_3.jpg')
-    # background_image = pygame.image.load('./images/Syndra_4.jpg')
     while not play_button_pressed and not back_button_pressed:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -232,10 +237,9 @@ def display_settings():
         button('Lightning', game.settings.width / 2 * 10.5, game.settings.height / 4 * 39, 120, 45, yellow, bright_yellow, skin_manager, 'Lightning')
 
         button("Back", 0, 0, 80, 40, green, bright_green, back_to_main_window)  # create a back button
-        # pygame.event.pump() already included in pygame.event.get()
         pygame.display.flip()   # updates screen
 
-    # determine which button was pressed
+    # determine whether the play button or the back button was pressed
     return play_button_pressed
 
 def save_score(score):
@@ -243,14 +247,16 @@ def save_score(score):
     with open('score.txt', 'a') as f:
         f.write(str(score) + '\n')
 
+
 def display_time():
     # display timer in top right corner
-    # increment timer every second
+    # increment timer by 1 every second
 
     global timer
     split_time = timer.split(':')
     h, m, s = map(int, split_time)
 
+    # add 1 to the seconds
     if s + 1 == 60:
         s = 0
         m += 1
@@ -271,12 +277,13 @@ def display_time():
 
     message_display(timer, game.settings.width / 2 * 15, 10, white, 20)     # center the timer
 
+# executed after choosing the skin
 def game_loop(player, fps=10):
     # play button sound
     pygame.mixer.Sound.play(button_sound)
 
     condition = display_settings()
-    if not condition: return    # this means that back button was pressed instead of play button
+    if not condition: return    # if condition is falsed, it means that back button was pressed instead of play button
 
     game.restart_game()
 
@@ -309,10 +316,11 @@ def game_loop(player, fps=10):
 
         display_time()
 
+        #another condition to prevent keep on increasing speed after score becomes a multiple of 10
         if prev_game_score != game.snake.score:
             increased_speed = False
 
-        # increase the speed of the game as the score increases by 10
+        # increase the speed of the game as the score increases by 10 (multiple of 10)
         if game.snake.score != 0 and game.snake.score % 10 == 0 and not increased_speed:
             prev_game_score = game.snake.score
             increased_speed = True
